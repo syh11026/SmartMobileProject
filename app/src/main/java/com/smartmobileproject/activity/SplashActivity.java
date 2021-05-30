@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -23,14 +24,16 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        boolean checkpermission = false;
 
 
-        boolean checkpermission = checkpermission();
+        checkpermission = checkpermission();
+       
 
         if(checkpermission==true){
                 try {
                     Thread.sleep(4000);
-                    startActivity(new Intent(this,MapActivity.class));
+                    startActivity(new Intent(this,KaKaoLoginActivity.class));
                     finish();
                 } catch (InterruptedException e) {
                     e.printStackTrace();

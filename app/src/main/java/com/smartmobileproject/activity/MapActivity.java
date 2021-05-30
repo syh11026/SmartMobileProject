@@ -5,8 +5,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -19,11 +21,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import com.Backgroundservice.BackgroundService;
+import com.Backgroundservice.BootReceiver;
 import com.smartmobileproject.function.KaKaoMap_funtion;
-import com.smartmobileproject.activity.R;
+import com.smartmobileproject.function.LocationService;
 
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
+
+import java.util.Calendar;
 
 public class MapActivity extends AppCompatActivity {
     double longtitude;
@@ -33,17 +39,27 @@ public class MapActivity extends AppCompatActivity {
     Location location;
     MapPoint mapPoint ;
     KaKaoMap_funtion kaKaoMap_funtion;
+    private Intent mBackgroundServiceIntent;
+    private BackgroundService mBackgroundService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Context context = getApplicationContext();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
         kaKaoMap_funtion = new KaKaoMap_funtion();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Log.d("툴바", String.valueOf(toolbar));
-
         MapView mapView = new MapView(this);
+        mBackgroundService = new BackgroundService(getApplicationContext());
+        mBackgroundServiceIntent = new Intent(getApplicationContext(),mBackgroundService.getClass());
+
+
+        if(!BootReceiver.isServiceRunning(this,mBackgroundService.getClass())){
+            startService(mBackgroundServiceIntent);
+        }
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
@@ -51,7 +67,6 @@ public class MapActivity extends AppCompatActivity {
                 longtitude = location.getLongitude();
                 latitude = location.getLatitude();
                 mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longtitude), true);
-
             }
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -84,10 +99,6 @@ public class MapActivity extends AppCompatActivity {
         Log.d("map", String.valueOf(mapPoint));
         kaKaoMap_funtion.addCustomMarker(mapView,mapPoint);
         mapViewContainer.addView(mapView);
-
-
-
-
     }
 
     @Override
@@ -111,4 +122,67 @@ public class MapActivity extends AppCompatActivity {
 
         return true;
     }
-}
+
+    public void onDestroy(){
+        super.onDestroy();
+        setLocation();
+        Log.d("onDestroy","실행");
+
+
+    }
+
+    private void setLocation(){
+        Context context = getApplicationContext();
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(calendar.SECOND,1);
+        try {
+            locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+            boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            if (!isGPSEnabled && !isNetworkEnabled) {
+            } else {
+                int hasFineLocationPermission = ContextCompat.checkSelfPermission(context,
+                        Manifest.permission.ACCESS_FINE_LOCATION);
+                int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(context,
+                        Manifest.permission.ACCESS_COARSE_LOCATION);
+                if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
+                        hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
+
+                } else
+                if (isNetworkEnabled) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 2000, (LocationListener) this);
+
+                    if (locationManager != null)
+                    {
+                        double longtitude = location.getLongitude();
+                        Log.d("longtitude", String.valueOf(longtitude));
+                    }
+                }
+                if (isGPSEnabled)
+                {
+                    if (location == null)
+                    {
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000, 2000, (LocationListener) this);
+                        if (locationManager != null)
+                        {
+                            double longtitude = location.getLongitude();
+                            Log.d("longtitude", String.valueOf(longtitude));
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Log.d("@@@", ""+e.toString());
+        }
+
+    }
+    }
+
+
+
+
+
+

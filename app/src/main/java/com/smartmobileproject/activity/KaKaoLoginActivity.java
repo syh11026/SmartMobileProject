@@ -21,6 +21,8 @@ import com.smartmobileproject.function.JsonParsing;
 
 import org.json.JSONObject;
 
+import java.util.concurrent.ExecutionException;
+
 import static com.kakao.usermgmt.StringSet.email;
 
 public class KaKaoLoginActivity extends AppCompatActivity {
@@ -62,14 +64,12 @@ public class KaKaoLoginActivity extends AppCompatActivity {
                         intent.putExtra("profileImg", result.getKakaoAccount().getProfile().getProfileImageUrl());
                         intent.putExtra("email", result.getKakaoAccount().getEmail());
                         Log.d("email", result.getKakaoAccount().getEmail());
-                        Log.d("name", result.getKakaoAccount().getProfile().getNickname());
                         String email = result.getKakaoAccount().getEmail();
-                        String name = result.getKakaoAccount().getProfile().getNickname();
                         startActivity(intent);
 
 
                         JsonParsing jsonParsing = new JsonParsing();
-                        jsonParsing.execute("https://phpproject-cparr.run.goorm.io/kakaologin.php?email="+email);
+                        jsonParsing.execute("https://phpproject-cparr.run.goorm.io/Kakaouser.php?email="+email);
 
 
                         /*GetHttpResponse getHttpResponse = new GetHttpResponse();

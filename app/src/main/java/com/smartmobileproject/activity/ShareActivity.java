@@ -28,10 +28,10 @@ public class ShareActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String Email = et_email.getText().toString();
+                String shared_email = et_email.getText().toString();
 
                 JsonParsing jsonParsing = new JsonParsing();
-                jsonParsing.execute("https://phpproject-cparr.run.goorm.io/kakaologin.php?friendemail="+Email);
+                jsonParsing.execute("https://phpproject-cparr.run.goorm.io/Shareuser.php?r=shared_email"+shared_email);
 
                 startActivity(new Intent(ShareActivity.this, MapActivity.class));
                 Toast.makeText(ShareActivity.this, "공유대상이 추가되었습니다.", Toast.LENGTH_SHORT).show();

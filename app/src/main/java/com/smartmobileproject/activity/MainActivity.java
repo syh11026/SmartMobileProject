@@ -10,8 +10,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.smartmobileproject.activity.R;
+import com.smartmobileproject.function.JsonParsing;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import static com.kakao.usermgmt.StringSet.email;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -21,6 +25,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
        //getPathOfAllImages();
 
+       /* JsonParsing jsonParsing = new JsonParsing();
+        try {
+            jsonParsing.execute("https://phpproject-cparr.run.goorm.io/Shareuser.php?email="+email+"&shared_email"+shared_email).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+*/
 
     }
 

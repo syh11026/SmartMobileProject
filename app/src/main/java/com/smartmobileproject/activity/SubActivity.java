@@ -3,6 +3,7 @@ package com.smartmobileproject.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +16,9 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback;
 public class SubActivity extends AppCompatActivity {
 
     private String strNick, strProfileImg, strEmail;
+    private Button btn_start;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +33,23 @@ public class SubActivity extends AppCompatActivity {
         TextView tv_nick = findViewById(R.id.tv_nickName);
         TextView tv_email = findViewById(R.id.tv_email);
         ImageView iv_profile = findViewById(R.id.iv_profile);
+        btn_start = findViewById(R.id.btn_start);
 
         tv_nick.setText(strNick);
         tv_email.setText(strEmail);
         Glide.with(this).load(strProfileImg).into(iv_profile);
+
+        btn_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(SubActivity.this, ShareActivity.class));
+
+            }
+        });
+
+
+
 
         //로그아웃
         findViewById(R.id.btn_logout).setOnClickListener(new View.OnClickListener() {

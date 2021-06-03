@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
@@ -15,6 +16,12 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
+import com.smartmobileproject.function.GetHttpResponse;
+import com.smartmobileproject.function.JsonParsing;
+
+import org.json.JSONObject;
+
+import static com.kakao.usermgmt.StringSet.email;
 
 public class KaKaoLoginActivity extends AppCompatActivity {
 
@@ -55,9 +62,18 @@ public class KaKaoLoginActivity extends AppCompatActivity {
                         intent.putExtra("profileImg", result.getKakaoAccount().getProfile().getProfileImageUrl());
                         intent.putExtra("email", result.getKakaoAccount().getEmail());
                         Log.d("email", result.getKakaoAccount().getEmail());
+                        Log.d("name", result.getKakaoAccount().getProfile().getNickname());
+                        String email = result.getKakaoAccount().getEmail();
+                        String name = result.getKakaoAccount().getProfile().getNickname();
                         startActivity(intent);
 
 
+                        JsonParsing jsonParsing = new JsonParsing();
+                        jsonParsing.execute("https://phpproject-cparr.run.goorm.io/kakaologin.php?email="+email);
+
+
+                        /*GetHttpResponse getHttpResponse = new GetHttpResponse();
+                        getHttpResponse.execute(//구름주소 );*/
 
                         Toast.makeText(KaKaoLoginActivity.this, "환영합니다!", Toast.LENGTH_SHORT).show();
                     }

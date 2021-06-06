@@ -22,20 +22,21 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
-import com.smartmobileproject.function.GetHttpResponse;
-import com.smartmobileproject.function.JsonParsing;
-
-import org.json.JSONObject;
-
-import java.util.concurrent.ExecutionException;
-
-import static com.kakao.usermgmt.StringSet.email;
 
 public class KaKaoLoginActivity extends AppCompatActivity {
 
     private ISessionCallback mSessionCallback;
     boolean response = false;
     String email, shared_email;
+    private String resultboolean;
+
+    public String getResultboolean() {
+        return resultboolean;
+    }
+
+    public void setResultboolean(String resultboolean) {
+        this.resultboolean = resultboolean;
+    }
 
 
     @Override
@@ -45,6 +46,7 @@ public class KaKaoLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_kakao);
 
         mSessionCallback = new ISessionCallback() {
+
 
             @Override
             public void onSessionOpened() {
@@ -67,35 +69,26 @@ public class KaKaoLoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(MeV2Response result) {
                         //로그인 성공
-                        Intent intent = new Intent(KaKaoLoginActivity.this, MapActivity.class);
+/*                      Intent intent = new Intent(KaKaoLoginActivity.this, SubActivity.class);
                         intent.putExtra("name", result.getKakaoAccount().getProfile().getNickname());
                         intent.putExtra("profileImg", result.getKakaoAccount().getProfile().getProfileImageUrl());
                         intent.putExtra("email", result.getKakaoAccount().getEmail());
-                        Log.d("email", result.getKakaoAccount().getEmail());
-
-                        startActivity(intent);
-
-/*
-                        JsonParsing jsonParsing = new JsonParsing();
-                        jsonParsing.execute("https://phpproject-cparr.run.goorm.io/Kakaouser.php?email="+email);
-
-
-                        GetHttpResponse getHttpResponse = new GetHttpResponse();
-                        getHttpResponse.execute(//구름주소 );*/
-
+                        Log.d("email", result.getKakaoAccount().getEmail());\
+                        startActivity(intent);*/
+                        email = result.getKakaoAccount().getEmail();
+                        Upload(email);
+                        String setbooleanupload = getResultboolean();
+                        boolean booleanupload = Boolean.parseBoolean(setbooleanupload);
+                        Log.d("booleanupload", String.valueOf(booleanupload));
                         Toast.makeText(KaKaoLoginActivity.this, "환영합니다!", Toast.LENGTH_SHORT).show();
-
-/*
-                        if(response = true) {
+                        if (booleanupload == true) {
                             Intent intent = new Intent(KaKaoLoginActivity.this, MainActivity.class);
-                            intent.putExtra("response", response);//파싱한 값을 넘겨
-
+                            intent.putExtra("eamil", email);//파싱한 값을 넘겨줌
+                            intent.putExtra("shared_email", shared_email);
                             KaKaoLoginActivity.this.startActivity(intent);
-
-                        }
-                        else {
+                        } else if (booleanupload == false) {
                             startActivity(new Intent(KaKaoLoginActivity.this, ShareActivity.class));
-                        }*/
+                        }
 
                     }
                 });
@@ -109,26 +102,22 @@ public class KaKaoLoginActivity extends AppCompatActivity {
             }
         };
 
-
-
-
         Session.getCurrentSession().addCallback(mSessionCallback);
         Session.getCurrentSession().checkAndImplicitOpen();
-
 
 
         //getHashKey();
     }
 
-    public void Upload(String email){
+    public void Upload(String email) {
 
-        String serverUrl="https://phpproject-cparr.run.goorm.io/Kakaouser.php?email="+email;
+        String serverUrl = "https://phpproject-cparr.run.goorm.io/Kakaouser.php";
 
-        SimpleMultiPartRequest smpr= new SimpleMultiPartRequest(Request.Method.POST, serverUrl, new Response.Listener<String>() {
+        SimpleMultiPartRequest smpr = new SimpleMultiPartRequest(Request.Method.POST, serverUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("hellosuccess",response);
-
+                Log.d("testresponse", response);
+                setResultboolean(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -138,14 +127,17 @@ public class KaKaoLoginActivity extends AppCompatActivity {
             }
         });
 
-        smpr.addStringParam("email",email);
-        Log.d("email",email);
+        smpr.addStringParam("email", email);
+        //smpr.addStringParam("shared_email",email);
+        Log.d("email", email);
+        //Log.d("shared_email", shared_email);
 
 
-        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
         Log.d("smpr", String.valueOf(smpr));
         requestQueue.add(smpr);
 
+        String[] emailresponse = smpr.toString().split(".");
 
 
     }
@@ -162,6 +154,7 @@ public class KaKaoLoginActivity extends AppCompatActivity {
         super.onDestroy();
         Session.getCurrentSession().removeCallback(mSessionCallback);
     }
+}
 
     /*
     private void getHashKey(){
@@ -184,4 +177,3 @@ public class KaKaoLoginActivity extends AppCompatActivity {
             }
         }
     }*/
-}

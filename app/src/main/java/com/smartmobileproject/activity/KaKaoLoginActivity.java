@@ -67,7 +67,7 @@ public class KaKaoLoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(MeV2Response result) {
                         //로그인 성공
-                        Intent intent = new Intent(KaKaoLoginActivity.this, SubActivity.class);
+                        Intent intent = new Intent(KaKaoLoginActivity.this, MapActivity.class);
                         intent.putExtra("name", result.getKakaoAccount().getProfile().getNickname());
                         intent.putExtra("profileImg", result.getKakaoAccount().getProfile().getProfileImageUrl());
                         intent.putExtra("email", result.getKakaoAccount().getEmail());
@@ -85,18 +85,17 @@ public class KaKaoLoginActivity extends AppCompatActivity {
 
                         Toast.makeText(KaKaoLoginActivity.this, "환영합니다!", Toast.LENGTH_SHORT).show();
 
-
+/*
                         if(response = true) {
-                            Intent rintent = getIntent();
+                            Intent intent = new Intent(KaKaoLoginActivity.this, MainActivity.class);
+                            intent.putExtra("response", response);//파싱한 값을 넘겨
 
-                            email =  rintent.getStringExtra("email");
-                            shared_email =  rintent.getStringExtra("shared_email");
+                            KaKaoLoginActivity.this.startActivity(intent);
 
-                            startActivity(new Intent(KaKaoLoginActivity.this, MapActivity.class));
                         }
                         else {
                             startActivity(new Intent(KaKaoLoginActivity.this, ShareActivity.class));
-                        }
+                        }*/
 
                     }
                 });
